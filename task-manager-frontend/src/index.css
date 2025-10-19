@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* This sets up a smooth transition when the theme changes */
+  @apply transition-colors duration-300;
+}
+:root, .dark {
+  --color-background: #111111; /* A very dark gray, almost black */
+  --color-surface: #1A1A1A;    /* The surface for inputs */
+  --color-card: #000000;       /* The card background is pure black */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A0A0A0; /* A light gray for secondary text */
+  --color-accent: #32CD32;       /* Lime Green */
+  --color-accent-hover: #2AAE2A;
+}
+
+/* Optional: Define a light theme if you still want one */
+.light {
+  --color-background: #F0F0F0;
+  --color-surface: #FFFFFF;
+  --color-card: #F9F9F9;
+  --color-text-primary: #000000;
+  --color-text-secondary: #555555;
+  --color-accent: #32CD32;
+  --color-accent-hover: #2AAE2A;
+}
+
