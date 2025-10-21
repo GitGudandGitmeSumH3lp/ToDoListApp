@@ -1,24 +1,19 @@
+// In src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { AuthProvider } from './authcontext';
-import reportWebVitals from './reportWebVitals';
-import { ThemeProvider } from './context/ThemeContext';
-
+import { AuthProvider } from './authcontext'; // Import the provider
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+// THE FIX IS HERE: We wrap the entire <App /> inside the <AuthProvider>.
+// This makes the authentication state (token, login function, etc.) available
+// to every single component in your application.
 root.render(
   <React.StrictMode>
-   <ThemeProvider>
-    <AuthProvider> {/*  Wrap App with AuthProvider */}
+    <AuthProvider>
       <App />
     </AuthProvider>
-   </ThemeProvider>
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

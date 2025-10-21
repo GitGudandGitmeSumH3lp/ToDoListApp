@@ -1,45 +1,40 @@
-// src/authcontext.js
+// In src/authcontext.js
 import React, { createContext, useState, useContext } from 'react';
-import api, { signup as apiSignup } from './api';
+import api from './api';
 
-const AuthContext = createContext({});
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('accessToken'));
 
   const login = async (email, password) => {
-    // FastAPI's token endpoint expects form data, not JSON
     const params = new URLSearchParams();
     params.append('username', email);
     params.append('password', password);
-
     const response = await api.post('/token', params);
-    localStorage.setItem('accessToken', response.data.access_token);
-    setToken(response.data.access_token);
-    // You would typically fetch user details here as well
+    
+    if (response.data && response.data.access_token) {
+      const new_token = response.data.access_token;
+      localStorage.setItem('accessToken', new_token);
+      setToken(new_token);
+    }
   };
 
-    // NEW SIGNUP FUNCTION
   const signup = async (email, password) => {
-    // 1. Create the new user account
-    await apiSignup({ email, password });
-    // 2. Immediately log the new user in
+    await api.post('/users/', { email, password });
     await login(email, password);
   };
 
   const logout = () => {
     localStorage.removeItem('accessToken');
-    setUser(null);
     setToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, signup }}>
+    <AuthContext.Provider value={{ token, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// ✅ This must be at the top level, outside the AuthProvider
 export const useAuth = () => useContext(AuthContext);
