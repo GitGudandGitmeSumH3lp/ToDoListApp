@@ -1,0 +1,30 @@
+<svg width="160" height="40" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- 
+    This SVG contains two main parts:
+    1. The Icon: A stylized "N" turning into an arrow.
+    2. The Text: The "NEXTUP." wordmark.
+  -->
+  
+  <title>NextUp Logo</title>
+  
+  <!-- The Icon Part -->
+  <g id="icon" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- The white part of the "N" (downstroke and diagonal) -->
+    <path d="M 10 35 L 10 5 L 35 35" stroke="white"/>
+    
+    <!-- The green "UP" arrow part of the "N" -->
+    <path d="M 35 35 L 35 10 L 30 15 M 35 10 L 40 15" stroke="#34D399"/>
+  </g>
+  
+  <!-- The Text Part -->
+  <text 
+    x="55" 
+    y="32" 
+    font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+    font-size="28" 
+    font-weight="bold" 
+    fill="white"
+    letter-spacing="1.5">
+    EXTUP.
+  </text>
+</svg>

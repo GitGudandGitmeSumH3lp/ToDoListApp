@@ -2,18 +2,21 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../authcontext';
+import logo from '../assets/logo.svg'; // 1. Import your new SVG logo
 
 const TopNavBar = () => {
   const { logout } = useAuth();
-  // Style for the active navigation link, matching your sketch
   const activeLinkStyle = {
-    color: '#FFFFFF', // White text
-    borderBottom: '2px solid #34D399' // Green underline
+    color: '#FFFFFF',
+    borderBottom: '2px solid #34D399'
   };
 
   return (
     <nav className="flex justify-between items-center mb-8 pb-4 border-b border-gray-800">
-      <h1 className="text-2xl font-bold text-white tracking-widest">NEXTUP.</h1>
+      
+      {/* 2. Replace the <h1> text with this <img> tag */}
+      <img src={logo} alt="NextUp Logo" className="h-7" /> {/* Adjust height (h-7, h-8, etc.) as needed */}
+
       <div className="flex items-center space-x-8">
         <NavLink to="/tasks" style={({ isActive }) => isActive ? activeLinkStyle : undefined} className="text-gray-400 hover:text-white pb-2 transition-colors">TASKS</NavLink>
         <NavLink to="/folders" style={({ isActive }) => isActive ? activeLinkStyle : undefined} className="text-gray-400 hover:text-white pb-2 transition-colors">FOLDERS</NavLink>

@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import GlassCard from './GlassCard';
 import { FaTrash } from 'react-icons/fa';
 
-export function Task({ task, onDelete }) {
+export function Task({ task, onDelete }) { // Changed 'id' and 'title' props to the whole 'task' object
   const {
     attributes,
     listeners,
@@ -14,16 +14,10 @@ export function Task({ task, onDelete }) {
     isDragging,
   } = useSortable({ id: task.id });
 
-  // This style object is provided by dnd-kit to handle the visual movement
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-
-  // --- THE DEFINITIVE FIX IS HERE ---
-  // We create a plain 'div' that will be the draggable element.
-  // We apply the ref, style, and all the special dnd-kit props to THIS div.
-  // The <GlassCard> now just goes inside it, for visual styling only.
 
   return (
     <div
@@ -31,13 +25,19 @@ export function Task({ task, onDelete }) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`touch-none ${isDragging ? 'z-10 opacity-80' : ''}`} // z-10 ensures it renders above other cards while dragging
+      className={`touch-none ${isDragging ? 'z-10 opacity-80' : ''}`}
     >
       <GlassCard className={`group p-3 relative ${isDragging ? 'border-green-400' : ''}`}>
-        <p className="text-white font-medium text-sm">{task.title}</p>
+        
+        {/* --- THIS IS THE CRITICAL CHANGE --- */}
+        {/* We check if task.status is 'DONE'. If so, we add strikethrough and faded text classes. */}
+        <p className={`text-white font-medium text-sm ${task.status === 'DONE' ? 'line-through decoration-7 decoration-white-500 text-gray-500' : ''}`}>
+          {task.title}
+        </p>
+
         <button 
           onClick={(e) => {
-            e.stopPropagation(); // Prevent the drag event from firing when clicking the button
+            e.stopPropagation();
             onDelete(task.id);
           }} 
           className="absolute top-2 right-2 text-gray-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"

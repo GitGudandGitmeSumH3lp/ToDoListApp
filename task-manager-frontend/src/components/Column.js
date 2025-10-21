@@ -15,8 +15,10 @@ export function Column({ id, title, tasks, onDeleteTask }) {
         ref={setNodeRef} 
         className="space-y-3 min-h-[300px] flex-grow rounded-sm transition-colors p-2"
       >
-        <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
+        <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
           {tasks.map(task => (
+            // --- THIS IS THE CHANGE ---
+            // Pass the entire 'task' object instead of individual props.
             <Task key={task.id} task={task} onDelete={onDeleteTask} />
           ))}
         </SortableContext>

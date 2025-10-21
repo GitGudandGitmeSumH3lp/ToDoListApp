@@ -123,11 +123,10 @@ def create_app():
     @app.route('/notes/<int:note_id>/status', methods=['PUT'])
     @token_required
     def update_note_status(current_user, note_id):
-        data = request.get_json()
-        note = Note.query.filter_by(id=note_id, owner_id=current_user.id).first_or_404()
-        note.status = data.get('status')
-        db.session.commit()
-        return jsonify({'message': 'Status updated'}), 200
+        new_status = data.get('status')
+        # Update the list of valid statuses here
+        if not new_status or new_status not in ["TO DO", "ONGOING", "COMPLETED"]:
+            return jsonify({'message': 'Status updated'}), 200
 
     @app.route('/notebooks/', methods=['GET'])
     @token_required
