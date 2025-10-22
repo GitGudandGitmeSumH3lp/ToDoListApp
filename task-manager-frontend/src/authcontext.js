@@ -1,5 +1,5 @@
 // In src/authcontext.js
-import React, { createContext, useState, useContext } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 import api from './api';
 
 const AuthContext = createContext(null);
@@ -14,9 +14,9 @@ export const AuthProvider = ({ children }) => {
     const response = await api.post('/token', params);
     
     if (response.data && response.data.access_token) {
-      const new_token = response.data.access_token;
-      localStorage.setItem('accessToken', new_token);
-      setToken(new_token);
+      const newToken = response.data.access_token;
+      localStorage.setItem('accessToken', newToken);
+      setToken(newToken);
     }
   };
 
