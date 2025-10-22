@@ -1,8 +1,11 @@
-# In ToDoListApp/run.py
+
+import os
 from app import create_app
+
+
+os.environ['FLASK_APP'] = 'app:create_app'
 
 app = create_app()
 
 if __name__ == '__main__':
-    # Running on port 8000 to match the frontend's API calls
-    app.run(debug=True, port=8000)
+    app.run(port=8000, debug=True)
