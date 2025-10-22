@@ -60,8 +60,15 @@ def token_required(f):
 # --- APP FACTORY ---
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = SECRET_KEY
-    CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://localhost:3001"])
+    
+    # --- THIS IS THE CRITICAL FIX ---
+    # We are adding your live Vercel URL to the list of allowed origins.
+    CORS(app, supports_credentials=True, origins=[
+        "http://localhost:3000", 
+        "http://localhost:3001",
+        "https://to-do-list-app-pi-liart.vercel.app"  # <-- ADD THIS LINE
+    ])
+
     basedir = os.path.abspath(os.path.dirname(__file__))
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, '../sql_app.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
