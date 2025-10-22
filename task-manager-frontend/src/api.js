@@ -1,7 +1,7 @@
 // In src/api.js
 import axios from 'axios';
 
-const API_URL = 'https://nextup-backend.onrender.com'; // <--- PASTE YOUR RENDER URL HERE
+const API_URL = 'https://nextup-backend-tmts.onrender.com'
 
 const api = axios.create({
   baseURL: API_URL,
