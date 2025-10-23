@@ -2,8 +2,7 @@
 
 ### A Full-Stack Kanban Productivity App
 
-> After a brutal, caffeine-fueled journey through the nine circles of debugging hell, solely because I am dumb, this project emerged. It's a testament to perseverance and a deep dive into what it takes to build a modern web application from the ground up. This isn't just a to-do list; it's a sleek, minimal, and fully functional productivity system designed for clarity and focus.
-
+> After a brutal, caffeine-fueled journey through the nine circles of debugging hell, solely because I am dumb, this project emerged. It's a testament to perseverance and a deep dive into what it takes to build a modern web application from the ground up. 
 ---
 
 ## Live Application
@@ -50,4 +49,5 @@ This project is deployed using a modern, decoupled, continuous deployment workfl
 *   This decoupled architecture is robust and scalable: the "face" of the application (Vercel) and the "brain" (Render) are completely independent, communicating only through a secure REST API.
 
 ---
+
 
