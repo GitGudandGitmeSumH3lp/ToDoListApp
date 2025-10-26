@@ -1,5 +1,5 @@
-# In ToDoListApp/app/auth.py
 
+import os
 import bcrypt
 from datetime import datetime, timedelta
 from typing import Optional
@@ -14,7 +14,10 @@ from . import crud, schemas, database
 
 # --- Configuration ---
 # In a real production app, this key should be a secret stored in an environment variable.
-SECRET_KEY = "a-very-secret-and-secure-key-that-you-should-change"
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError(" No SECRET_KEY set in environment")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

@@ -1,7 +1,11 @@
 // In src/api.js
 import axios from 'axios';
 
-const API_URL = 'https://nextup-backend-tmts.onrender.com'
+const isProduction = process.env.NODE_ENV === 'production';
+const localApiUrl = 'http://127.0.0.1:8000';
+const productionApiUrl = 'https://nextup-backend-tmts.onrender.com'; 
+
+const API_URL = isProduction ? productionApiUrl : localApiUrl;
 
 const api = axios.create({
   baseURL: API_URL,

@@ -7,19 +7,31 @@ from jose import jwt, JWTError
 from functools import wraps
 from datetime import datetime, timedelta
 import bcrypt
+from dotenv import load_dotenv
 
+
+load_dotenv()
+
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable is not set")
 db = SQLAlchemy()
-SECRET_KEY = "your-final-secret-key-that-will-work"
 ALGORITHM = "HS256"
 
-# --- DATA MODELS (Correct and Final) ---
+# --- DATA MODELS (Corrected with 'lazy=True') ---
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
     hashed_password = db.Column(db.String, nullable=False)
-    notebooks = db.relationship('Notebook', back_populates='owner', cascade="all, delete-orphan")
-    notes = db.relationship('Note', back_populates='owner', cascade="all, delete-orphan")
+    username = db.Column(db.String, unique=True, nullable=True)
+    profile_picture_url = db.Column(db.String, nullable=True)
+    
+    # --- THIS IS THE CRITICAL FIX ---
+    # Adding lazy='dynamic' or lazy=True ensures all relationships are loaded correctly.
+    notebooks = db.relationship('Notebook', back_populates='owner', lazy=True, cascade="all, delete-orphan")
+    notes = db.relationship('Note', back_populates='owner', lazy=True, cascade="all, delete-orphan")
 
 class Notebook(db.Model):
     __tablename__ = "notebooks"
@@ -27,7 +39,7 @@ class Notebook(db.Model):
     title = db.Column(db.String, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     owner = db.relationship('User', back_populates='notebooks')
-    notes = db.relationship('Note', back_populates='notebook', cascade="all, delete-orphan")
+    notes = db.relationship('Note', back_populates='notebook', lazy=True, cascade="all, delete-orphan")
 
 class Note(db.Model):
     __tablename__ = "notes"
@@ -60,18 +72,18 @@ def token_required(f):
 # --- APP FACTORY ---
 def create_app():
     app = Flask(__name__)
-    
-    # --- THIS IS THE CRITICAL FIX ---
-    # We are adding your live Vercel URL to the list of allowed origins.
-    CORS(app, supports_credentials=True, origins=[
-        "http://localhost:3000", 
-        "http://localhost:3001",
-        "https://to-do-list-app-pi-liart.vercel.app"  # <-- ADD THIS LINE
-    ])
+    app.config['SECRET_KEY'] = SECRET_KEY
+    # For Development
+    CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://localhost:3001", "https://to-do-list-app-pi-liart.vercel.app  "]) # Note trailing space in URL
 
     basedir = os.path.abspath(os.path.dirname(__file__))
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, '../sql_app.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config.update(
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE='Lax',
+    )
     db.init_app(app)
 
     with app.app_context():
@@ -99,6 +111,28 @@ def create_app():
         to_encode = {'sub': user.email, "exp": datetime.utcnow() + timedelta(minutes=30)}
         token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return jsonify({'access_token': token, 'token_type': 'bearer'})
+
+    @app.route('/me', methods=['GET'])
+    @token_required
+    def get_me(current_user):
+        return jsonify({
+            'id': current_user.id,
+            'email': current_user.email,
+            'username': current_user.username,
+            'profile_picture_url': current_user.profile_picture_url
+        })
+
+    @app.route('/me', methods=['PUT'])
+    @token_required
+    def update_me(current_user):
+        data = request.get_json()
+        new_username = data.get('username')
+        if new_username and new_username != current_user.username:
+            if User.query.filter_by(username=new_username).first():
+                return jsonify({'message': 'Username is already taken'}), 409
+            current_user.username = new_username
+        db.session.commit()
+        return jsonify({'message': 'Profile updated successfully'}), 200
 
     @app.route('/notes/', methods=['GET'])
     @token_required
@@ -169,5 +203,18 @@ def create_app():
         notebook = Notebook.query.filter_by(id=notebook_id, owner_id=current_user.id).first_or_404()
         notes = Note.query.filter_by(notebook_id=notebook.id).order_by(Note.priority.desc(), Note.id.desc()).all()
         return jsonify({'id': notebook.id, 'title': notebook.title, 'notes': [{'id': n.id, 'title': n.title, 'category': n.category, 'status': n.status, 'priority': n.priority, 'due_date': str(n.due_date) if n.due_date else None} for n in notes]})
-        
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        # log the actual error
+        print(f"Server Error: {error}") # Use logging module
+        return jsonify({'message': 'Internal Server Error'}), 500
+    @app.errorhandler(404)
+    def not_found(error):
+        return({'message': 'Resource not found'}), 404
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return({'message': 'Method not allowed'}), 405
+
+
     return app
