@@ -7,10 +7,9 @@ from jose import jwt, JWTError
 from functools import wraps
 from datetime import datetime, timedelta
 import bcrypt
-from dotenv import load_dotenv
 
 
-load_dotenv()
+db = SQLAlchemy()
 
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "your-final-secret-key-that-will-work")
