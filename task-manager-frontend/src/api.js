@@ -1,17 +1,13 @@
 // In src/api.js
 import axios from 'axios';
 
-const isProduction = process.env.NODE_ENV === 'production';
-const localApiUrl = 'http://127.0.0.1:8000';
-const productionApiUrl = 'https://nextup-backend-tmts.onrender.com'; 
-
-const API_URL = isProduction ? productionApiUrl : localApiUrl;
+// This is the correct, professional way to handle environment variables in Create React App.
+const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
 
 const api = axios.create({
   baseURL: API_URL,
 });
-
-// This interceptor correctly adds the login token to every request.
+    
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('accessToken');
   if (token) {
@@ -19,5 +15,5 @@ api.interceptors.request.use(config => {
   }
   return config;
 });
-
+    
 export default api;

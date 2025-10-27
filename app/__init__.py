@@ -13,10 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-if not SECRET_KEY:
-    raise ValueError("SECRET_KEY environment variable is not set")
-db = SQLAlchemy()
+SECRET_KEY = os.environ.get("SECRET_KEY", "your-final-secret-key-that-will-work")
 ALGORITHM = "HS256"
 
 # --- DATA MODELS (Corrected with 'lazy=True') ---
