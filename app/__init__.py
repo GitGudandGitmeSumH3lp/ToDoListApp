@@ -200,17 +200,4 @@ def create_app():
         notes = Note.query.filter_by(notebook_id=notebook.id).order_by(Note.priority.desc(), Note.id.desc()).all()
         return jsonify({'id': notebook.id, 'title': notebook.title, 'notes': [{'id': n.id, 'title': n.title, 'category': n.category, 'status': n.status, 'priority': n.priority, 'due_date': str(n.due_date) if n.due_date else None} for n in notes]})
 
-    @app.errorhandler(500)
-    def internal_error(error):
-        # log the actual error
-        print(f"Server Error: {error}") # Use logging module
-        return jsonify({'message': 'Internal Server Error'}), 500
-    @app.errorhandler(404)
-    def not_found(error):
-        return({'message': 'Resource not found'}), 404
-    @app.errorhandler(405)
-    def method_not_allowed(error):
-        return({'message': 'Method not allowed'}), 405
-
-
     return app
