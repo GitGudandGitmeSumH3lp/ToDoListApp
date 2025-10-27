@@ -8,11 +8,14 @@ from datetime import datetime, timedelta, timezone
 import bcrypt
 
 db = SQLAlchemy()
-# --- THE CRITICAL SECURITY CHANGE ---
 # Read the secret DIRECTLY from the environment variables.
 # Render sets these from its dashboard. Our run.py sets it for local dev.
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = "HS256"
+
+# with a clear error in the logs, instead of failing silently later.
+if not SECRET_KEY:
+    raise ValueError("FATAL ERROR: SECRET_KEY environment variable is not set.")
 
 # --- DATA MODELS ---
 class User(db.Model):
