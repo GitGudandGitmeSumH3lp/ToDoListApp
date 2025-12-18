@@ -7,7 +7,6 @@
 
 ## Live Application
 
-The application is deployed and fully operational. No local setup is required.
 
 **Access the live application here:**
 **[https://to-do-list-app-pi-liart.vercel.app/login](https://to-do-list-app-pi-liart.vercel.app/login)** 
@@ -49,5 +48,6 @@ This project is deployed using a modern, decoupled, continuous deployment workfl
 *   This decoupled architecture is robust and scalable: the "face" of the application (Vercel) and the "brain" (Render) are completely independent, communicating only through a secure REST API.
 
 ---
+
 
 
